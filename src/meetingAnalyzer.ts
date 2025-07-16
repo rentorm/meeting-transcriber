@@ -24,7 +24,7 @@ export class MeetingAnalyzer {
   private calculateTalkTime(transcripts: Transcript[]): Record<string, number> {
     const talkTime: Record<string, number> = {};
     
-    transcripts.forEach((t, i) => {
+    transcripts.forEach((t) => {
       if (!talkTime[t.speaker]) {
         talkTime[t.speaker] = 0;
       }
@@ -83,7 +83,7 @@ export class MeetingAnalyzer {
   }
 }
 
-interface MeetingAnalysis {
+export interface MeetingAnalysis {
   speakers: string[];
   talkTime: Record<string, number>;
   keywords: string[];

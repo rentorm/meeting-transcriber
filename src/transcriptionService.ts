@@ -1,6 +1,4 @@
 import OpenAI from 'openai';
-import FormData from 'form-data';
-import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { TranscriptionSegment } from './types';
@@ -64,7 +62,7 @@ export class TranscriptionService {
     }
   }
 
-  private identifySpeaker(segment: any): string {
+  private identifySpeaker(segment: { avg_logprob: number }): string {
     // Simple speaker identification based on audio characteristics
     // In a production system, you'd use a proper speaker diarization service
     

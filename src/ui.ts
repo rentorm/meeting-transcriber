@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
 import { Session, Transcript } from './types';
+import { MeetingAnalysis } from './meetingAnalyzer';
 
 export class UI {
   async showMainMenu(): Promise<string> {
@@ -113,7 +114,7 @@ export class UI {
     await this.waitForKeyPress();
   }
 
-  displayAnalysis(analysis: any): void {
+  displayAnalysis(analysis: MeetingAnalysis): void {
     console.log('\n' + chalk.bold.blue('Meeting Analysis'));
     console.log(chalk.blue('═'.repeat(60)));
     
@@ -122,7 +123,7 @@ export class UI {
     console.log(chalk.bold('Speakers:') + ` ${analysis.speakers.join(', ')}`);
     
     console.log('\n' + chalk.bold('Talk Time:'));
-    Object.entries(analysis.talkTime).forEach(([speaker, time]: [string, any]) => {
+    Object.entries(analysis.talkTime).forEach(([speaker, time]) => {
       const minutes = Math.round(time / 60);
       const percentage = Math.round((time / (analysis.totalDuration * 60)) * 100);
       console.log(`  ${speaker}: ${minutes}min (${percentage}%)`);

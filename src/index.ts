@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import chalk from 'chalk';
+import ora from 'ora';
 import { Database } from './database';
 import { SystemAudioCapture } from './audioCapture';
 import { TranscriptionService } from './transcriptionService';
@@ -110,7 +111,7 @@ class MeetingTranscriberApp {
     });
   }
 
-  private async processAudioQueue(spinner: any): Promise<void> {
+  private async processAudioQueue(spinner: ora.Ora): Promise<void> {
     if (this.audioQueue.length === 0) return;
 
     // Group audio chunks by source
@@ -166,7 +167,7 @@ class MeetingTranscriberApp {
     spinner.start();
   }
 
-  private async stopRecording(spinner: any): Promise<void> {
+  private async stopRecording(spinner: ora.Ora): Promise<void> {
     spinner.stop();
     
     if (this.processingInterval) {

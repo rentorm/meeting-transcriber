@@ -44,7 +44,7 @@ export class Database {
   createSession(name: string, participants?: string): Promise<number> {
     return new Promise((resolve, reject) => {
       const stmt = this.db.prepare('INSERT INTO sessions (name, startTime, participants) VALUES (?, ?, ?)');
-      stmt.run(name, new Date().toISOString(), participants, function(err) {
+      stmt.run(name, new Date().toISOString(), participants, function(this: sqlite3.RunResult, err: Error | null) {
         if (err) reject(err);
         else resolve(this.lastID);
       });
@@ -55,7 +55,7 @@ export class Database {
   endSession(sessionId: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const stmt = this.db.prepare('UPDATE sessions SET endTime = ? WHERE id = ?');
-      stmt.run(new Date().toISOString(), sessionId, (err) => {
+      stmt.run(new Date().toISOString(), sessionId, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });
@@ -68,7 +68,7 @@ export class Database {
       const stmt = this.db.prepare(
         'INSERT INTO transcripts (sessionId, timestamp, speaker, text, confidence) VALUES (?, ?, ?, ?, ?)'
       );
-      stmt.run(sessionId, new Date().toISOString(), speaker, text, confidence, (err) => {
+      stmt.run(sessionId, new Date().toISOString(), speaker, text, confidence, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });
@@ -78,7 +78,7 @@ export class Database {
 
   getSessions(): Promise<Session[]> {
     return new Promise((resolve, reject) => {
-      this.db.all('SELECT * FROM sessions ORDER BY startTime DESC', (err, rows) => {
+      this.db.all('SELECT * FROM sessions ORDER BY startTime DESC', (err: Error | null, rows: any[]) => {
         if (err) reject(err);
         else resolve(rows as Session[]);
       });
@@ -90,7 +90,7 @@ export class Database {
       this.db.all(
         'SELECT * FROM transcripts WHERE sessionId = ? ORDER BY timestamp', 
         [sessionId], 
-        (err, rows) => {
+        (err: Error | null, rows: any[]) => {
           if (err) reject(err);
           else resolve(rows as Transcript[]);
         }
@@ -103,7 +103,7 @@ export class Database {
       this.db.all(
         'SELECT * FROM transcripts WHERE text LIKE ? ORDER BY timestamp',
         [`%${query}%`],
-        (err, rows) => {
+        (err: Error | null, rows: any[]) => {
           if (err) reject(err);
           else resolve(rows as Transcript[]);
         }
@@ -163,7 +163,7 @@ export class Database {
 
   private getSession(sessionId: number): Promise<Session> {
     return new Promise((resolve, reject) => {
-      this.db.get('SELECT * FROM sessions WHERE id = ?', [sessionId], (err, row) => {
+      this.db.get('SELECT * FROM sessions WHERE id = ?', [sessionId], (err: Error | null, row: any) => {
         if (err) reject(err);
         else resolve(row as Session);
       });
