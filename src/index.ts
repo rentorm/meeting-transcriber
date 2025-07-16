@@ -7,6 +7,7 @@ import { TranscriptionService } from './transcriptionService';
 import { MeetingAnalyzer } from './meetingAnalyzer';
 import { UI } from './ui';
 import { AudioChunk } from './types';
+import { AudioUtils } from './audioUtils';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -124,42 +125,46 @@ class MeetingTranscriberApp {
 
     // Process system audio
     if (systemChunks.length > 0) {
-      const combinedBuffer = Buffer.concat(systemChunks.map(c => c.buffer));
-      const segments = await this.transcriptionService.transcribeWithSpeakerDiarization(
-        combinedBuffer, 
-        'system'
-      );
-      
-      for (const segment of segments) {
-        if (this.currentSessionId && segment.text.trim()) {
-          await this.db.addTranscript(
-            this.currentSessionId,
-            segment.speaker,
-            segment.text,
-            segment.confidence
-          );
-          this.ui.displayLiveTranscript(segment.speaker, segment.text, segment.confidence);
+      const combinedBuffer = AudioUtils.combineWavBuffers(systemChunks.map(c => c.buffer));
+      if (combinedBuffer.length > 0 && AudioUtils.isValidWavBuffer(combinedBuffer)) {
+        const segments = await this.transcriptionService.transcribeWithSpeakerDiarization(
+          combinedBuffer, 
+          'system'
+        );
+        
+        for (const segment of segments) {
+          if (this.currentSessionId && segment.text.trim()) {
+            await this.db.addTranscript(
+              this.currentSessionId,
+              segment.speaker,
+              segment.text,
+              segment.confidence
+            );
+            this.ui.displayLiveTranscript(segment.speaker, segment.text, segment.confidence);
+          }
         }
       }
     }
 
     // Process microphone audio
     if (micChunks.length > 0) {
-      const combinedBuffer = Buffer.concat(micChunks.map(c => c.buffer));
-      const segments = await this.transcriptionService.transcribeWithSpeakerDiarization(
-        combinedBuffer,
-        'microphone'
-      );
-      
-      for (const segment of segments) {
-        if (this.currentSessionId && segment.text.trim()) {
-          await this.db.addTranscript(
-            this.currentSessionId,
-            segment.speaker,
-            segment.text,
-            segment.confidence
-          );
-          this.ui.displayLiveTranscript(segment.speaker, segment.text, segment.confidence);
+      const combinedBuffer = AudioUtils.combineWavBuffers(micChunks.map(c => c.buffer));
+      if (combinedBuffer.length > 0 && AudioUtils.isValidWavBuffer(combinedBuffer)) {
+        const segments = await this.transcriptionService.transcribeWithSpeakerDiarization(
+          combinedBuffer,
+          'microphone'
+        );
+        
+        for (const segment of segments) {
+          if (this.currentSessionId && segment.text.trim()) {
+            await this.db.addTranscript(
+              this.currentSessionId,
+              segment.speaker,
+              segment.text,
+              segment.confidence
+            );
+            this.ui.displayLiveTranscript(segment.speaker, segment.text, segment.confidence);
+          }
         }
       }
     }

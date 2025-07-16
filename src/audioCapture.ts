@@ -19,8 +19,6 @@ export class SystemAudioCapture extends EventEmitter {
   }
 
   private startSystemAudioCapture(): void {
-    const outputPath = path.join(__dirname, `system_${Date.now()}.wav`);
-    
     // Use FFmpeg to capture from BlackHole audio device
     this.ffmpegProcess = spawn('ffmpeg', [
       '-f', 'avfoundation',
@@ -28,11 +26,8 @@ export class SystemAudioCapture extends EventEmitter {
       '-acodec', 'pcm_s16le',
       '-ar', config.audio.sampleRate.toString(),
       '-ac', '1',
-      '-f', 'segment',
-      '-segment_time', config.audio.chunkDuration.toString(),
-      '-reset_timestamps', '1',
-      '-strftime', '1',
-      outputPath
+      '-f', 'wav',
+      '-'  // output to stdout
     ]);
 
     this.ffmpegProcess.stdout?.on('data', (data) => {
