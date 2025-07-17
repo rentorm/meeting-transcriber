@@ -1,6 +1,23 @@
 # Meeting Transcriber
 
+> ⚠️ **ALPHA SOFTWARE**: This project is in an experimental state and not ready for production use. APIs may change, features may be incomplete, and bugs are expected. Use at your own risk.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Alpha Status](https://img.shields.io/badge/Status-Alpha-red.svg)]()
+
 A professional meeting transcription tool for macOS that captures system audio and microphone input, providing real-time transcription with speaker identification.
+
+## 🚧 Project Status
+
+This project is currently in **ALPHA** stage:
+- Core functionality is implemented but not thoroughly tested
+- The API and features are subject to change
+- Not recommended for production or critical use cases
+- Contributions and feedback are welcome!
+
+See our [Roadmap](IMPROVEMENT_RECOMMENDATIONS.md) for planned improvements and AssemblyAI migration plans.
 
 ## Features
 
@@ -16,9 +33,11 @@ A professional meeting transcription tool for macOS that captures system audio a
 
 - macOS (required for audio capture)
 - Node.js 18+
-- OpenAI API key
+- OpenAI API key (will migrate to AssemblyAI)
 - BlackHole virtual audio driver
 - FFmpeg and Sox
+
+> **Note**: We are planning to migrate from OpenAI Whisper to AssemblyAI for improved accuracy and features. See [IMPROVEMENT_RECOMMENDATIONS.md](IMPROVEMENT_RECOMMENDATIONS.md) for details.
 
 ## Installation
 
@@ -39,9 +58,10 @@ A professional meeting transcription tool for macOS that captures system audio a
 
 3. **Set up environment:**
    ```bash
-   # Copy the .env template and add your OpenAI API key
+   # Create your environment configuration
    cp .env.example .env
-   # Edit .env and add: OPENAI_API_KEY=your_key_here
+   # Edit .env and add your OpenAI API key:
+   # OPENAI_API_KEY=your_key_here
    ```
 
 4. **Verify setup:**
@@ -115,6 +135,58 @@ npm run setup-audio
 - No audio data is stored permanently (only transcripts)
 - All processing happens locally except for OpenAI API calls
 
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and contribute to the project.
+
+### Development Setup
+
+```bash
+# Fork and clone the repository
+git clone https://github.com/rentorm/meeting-transcriber.git
+cd meeting-transcriber
+
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Run tests (when available)
+npm test
+
+# Type checking
+npm run typecheck
+
+# Linting
+npm run lint
+```
+
+## Community
+
+- **Issues**: [GitHub Issues](https://github.com/rentorm/meeting-transcriber/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/rentorm/meeting-transcriber/discussions)
+- **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+
+## Security
+
+- API keys are stored locally in .env file (never committed)
+- No audio data is stored permanently (only transcripts)
+- All processing happens locally except for transcription API calls
+- For security concerns, please see [SECURITY.md](SECURITY.md)
+
 ## License
 
-MIT License - See LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [BlackHole Audio](https://github.com/ExistentialAudio/BlackHole) for virtual audio routing
+- [OpenAI Whisper](https://openai.com/research/whisper) for transcription (migrating to AssemblyAI)
+- [AssemblyAI](https://www.assemblyai.com/) for future transcription and AI features
+
+---
+
+<p align="center">
+  Made with ❤️ for better meeting productivity
+</p>

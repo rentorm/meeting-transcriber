@@ -1,7 +1,6 @@
 import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import { config } from './config';
-import * as path from 'path';
 
 export class SystemAudioCapture extends EventEmitter {
   private ffmpegProcess: ChildProcess | null = null;

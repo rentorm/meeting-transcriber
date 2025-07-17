@@ -30,7 +30,7 @@ export class AudioUtils {
           if (sampleRate < 8000 || sampleRate > 48000) sampleRate = 16000;
           if (numChannels < 1 || numChannels > 2) numChannels = 1;
           if (bitsPerSample !== 16 && bitsPerSample !== 8) bitsPerSample = 16;
-        } catch (error) {
+        } catch {
           // Use defaults if reading fails
           sampleRate = 16000;
           numChannels = 1;

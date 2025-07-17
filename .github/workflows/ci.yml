@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run type checking
+      run: npm run typecheck
+    
+    - name: Run linting
+      run: npm run lint
+    
+    - name: Build project
+      run: npm run build
+    
+    - name: Check for security vulnerabilities
+      run: npm audit --audit-level=high
+      continue-on-error: true  # Don't fail builds in alpha
+
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check code formatting
+      run: npm run lint
+    
+    # Add test coverage when tests are implemented
+    # - name: Run tests with coverage
+    #   run: npm run test:coverage
+    
+    # - name: Upload coverage to Codecov
+    #   uses: codecov/codecov-action@v3

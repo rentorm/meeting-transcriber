@@ -4,7 +4,9 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "WebFetch(domain:www.assemblyai.com)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
