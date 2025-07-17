@@ -1,14 +1,13 @@
 import { AssemblyAI } from 'assemblyai';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { TranscriptionSegment } from './types';
 
 export class TranscriptionService {
   private client: AssemblyAI;
-  private apiKey: string;
 
   constructor(apiKey: string) {
-    this.apiKey = apiKey;
     this.client = new AssemblyAI({ apiKey });
   }
 
@@ -16,9 +15,38 @@ export class TranscriptionService {
     audioBuffer: Buffer, 
     source: 'microphone' | 'system'
   ): Promise<TranscriptionSegment[]> {
+    return this.transcribeWithRetry(audioBuffer, source);
+  }
+
+  private async transcribeWithRetry(
+    audioBuffer: Buffer,
+    source: 'microphone' | 'system',
+    attempt: number = 1
+  ): Promise<TranscriptionSegment[]> {
+    const maxAttempts = 3;
+    
     try {
+      return await this.performTranscription(audioBuffer, source);
+    } catch (error) {
+      console.error(`Transcription error (attempt ${attempt}/${maxAttempts}):`, error);
+      
+      if (this.isRetryableError(error) && attempt < maxAttempts) {
+        const backoffMs = Math.min(1000 * Math.pow(2, attempt), 10000);
+        console.log(`Retrying after ${backoffMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        return this.transcribeWithRetry(audioBuffer, source, attempt + 1);
+      }
+      
+      return [];
+    }
+  }
+
+  private async performTranscription(
+    audioBuffer: Buffer,
+    source: 'microphone' | 'system'
+  ): Promise<TranscriptionSegment[]> {
       // Save buffer to temporary file
-      const tempPath = path.join(__dirname, `temp_${Date.now()}.wav`);
+      const tempPath = path.join(os.tmpdir(), `temp_${Date.now()}.wav`);
       fs.writeFileSync(tempPath, audioBuffer);
 
       // Upload the audio file
@@ -32,10 +60,16 @@ export class TranscriptionService {
       };
 
       // Start transcription
-      const transcript = await this.client.transcripts.transcribe(config);
+      let transcript = await this.client.transcripts.transcribe(config);
 
       // Clean up temp file
       fs.unlinkSync(tempPath);
+
+      // Poll until transcript is completed or errors out
+      while (transcript.status === 'queued' || transcript.status === 'processing') {
+        await new Promise(res => setTimeout(res, 5000));
+        transcript = await this.client.transcripts.get(transcript.id);
+      }
 
       // Check if transcription was successful
       if (transcript.status === 'error') {
@@ -66,16 +100,6 @@ export class TranscriptionService {
       }
 
       return segments;
-    } catch (error) {
-      console.error('Transcription error:', error);
-      
-      // Implement retry logic for transient errors
-      if (this.isRetryableError(error)) {
-        return this.retryTranscription(audioBuffer, source);
-      }
-      
-      return [];
-    }
   }
 
   private isRetryableError(error: unknown): boolean {
@@ -92,38 +116,12 @@ export class TranscriptionService {
     return false;
   }
 
-  private async retryTranscription(
-    audioBuffer: Buffer,
-    source: 'microphone' | 'system',
-    attempt: number = 1
-  ): Promise<TranscriptionSegment[]> {
-    const maxAttempts = 3;
-    const backoffMs = Math.min(1000 * Math.pow(2, attempt), 10000); // Exponential backoff
-
-    if (attempt > maxAttempts) {
-      console.error('Max retry attempts reached');
-      return [];
-    }
-
-    console.log(`Retrying transcription (attempt ${attempt}/${maxAttempts}) after ${backoffMs}ms...`);
-    await new Promise(resolve => setTimeout(resolve, backoffMs));
-
-    try {
-      return await this.transcribeWithSpeakerDiarization(audioBuffer, source);
-    } catch (error) {
-      if (this.isRetryableError(error) && attempt < maxAttempts) {
-        return this.retryTranscription(audioBuffer, source, attempt + 1);
-      }
-      console.error('Retry failed:', error);
-      return [];
-    }
-  }
 
   async transcribeRealtimeStream(audioStream: Buffer): Promise<string> {
     // For real-time transcription, AssemblyAI offers WebSocket streaming
     // This is a simplified batch version for now
     try {
-      const tempPath = path.join(__dirname, `stream_${Date.now()}.wav`);
+      const tempPath = path.join(os.tmpdir(), `stream_${Date.now()}.wav`);
       fs.writeFileSync(tempPath, audioStream);
 
       // Upload the audio file
@@ -136,9 +134,15 @@ export class TranscriptionService {
         language_code: 'en',
       };
 
-      const transcript = await this.client.transcripts.transcribe(config);
+      let transcript = await this.client.transcripts.transcribe(config);
 
       fs.unlinkSync(tempPath);
+
+      // Poll until transcript is completed or errors out
+      while (transcript.status === 'queued' || transcript.status === 'processing') {
+        await new Promise(res => setTimeout(res, 5000));
+        transcript = await this.client.transcripts.get(transcript.id);
+      }
 
       if (transcript.status === 'error') {
         console.error('Stream transcription error:', transcript.error);
