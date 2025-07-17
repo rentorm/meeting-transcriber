@@ -27,7 +27,7 @@ class MeetingTranscriberApp {
     this.db = new Database();
     this.audioCapture = new SystemAudioCapture();
     this.transcriptionService = new TranscriptionService(
-      process.env.OPENAI_API_KEY || ''
+      process.env.ASSEMBLYAI_API_KEY || ''
     );
     this.analyzer = new MeetingAnalyzer();
     this.ui = new UI();
