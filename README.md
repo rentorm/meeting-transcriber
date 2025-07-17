@@ -105,9 +105,10 @@ The app uses a multi-output device to capture system audio:
 
 ## Cost
 
-- Uses OpenAI Whisper API at $0.006 per minute
-- Typical meeting costs ~$0.06 per hour
+- Uses AssemblyAI API at $0.00025 per second (~$0.015 per minute)
+- Typical meeting costs ~$0.90 per hour
 - Only transcribes when audio is detected
+- Speaker diarization included at no extra cost
 
 ## Troubleshooting
 

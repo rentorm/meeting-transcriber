@@ -58,9 +58,9 @@ class MeetingTranscriberApp {
     console.log(chalk.bold('🎙️  Professional Meeting Transcriber\n'));
 
     // Check for API key
-    if (!process.env.OPENAI_API_KEY) {
-      console.log(chalk.red('⚠️  OpenAI API key not found!'));
-      console.log('Please create a .env file with: OPENAI_API_KEY=your_key_here\n');
+    if (!process.env.ASSEMBLYAI_API_KEY) {
+      console.log(chalk.red('⚠️  AssemblyAI API key not found!'));
+      console.log('Please create a .env file with: ASSEMBLYAI_API_KEY=your_key_here\n');
       process.exit(1);
     }
 
