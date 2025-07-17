@@ -29,7 +29,7 @@ npm run setup-audio # Check and verify audio configuration
 - **Main App** (`src/index.ts`): Entry point with `MeetingTranscriberApp` class that orchestrates all components
 - **Database** (`src/database.ts`): SQLite-based storage with sessions and transcripts tables
 - **Audio Capture** (`src/audioCapture.ts`): Handles dual audio capture using FFmpeg (BlackHole) and Sox (microphone)
-- **Transcription Service** (`src/transcriptionService.ts`): OpenAI Whisper API integration with speaker diarization
+- **Transcription Service** (`src/transcriptionService.ts`): AssemblyAI integration with built-in speaker diarization
 - **UI** (`src/ui.ts`): Terminal-based interface using Inquirer and Chalk
 - **Meeting Analyzer** (`src/meetingAnalyzer.ts`): Post-meeting analysis including talk time and keyword extraction
 
@@ -43,7 +43,7 @@ npm run setup-audio # Check and verify audio configuration
 - **Audio Format**: PCM 16-bit, 16kHz sample rate, mono
 - **Processing**: Real-time chunking with 10-second intervals
 - **Storage**: SQLite with FTS for transcript search
-- **API**: OpenAI Whisper for transcription (~$0.06/hour)
+- **API**: AssemblyAI for transcription with built-in speaker diarization
 
 ## macOS-Specific Requirements
 
@@ -55,7 +55,7 @@ This tool requires macOS-specific setup:
 ## Environment Setup
 
 Required environment variables:
-- `OPENAI_API_KEY`: OpenAI API key for Whisper transcription
+- `ASSEMBLYAI_API_KEY`: AssemblyAI API key for transcription
 
 ## Development Notes
 

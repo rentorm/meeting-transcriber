@@ -33,11 +33,11 @@ See our [Roadmap](IMPROVEMENT_RECOMMENDATIONS.md) for planned improvements and A
 
 - macOS (required for audio capture)
 - Node.js 18+
-- OpenAI API key (will migrate to AssemblyAI)
+- AssemblyAI API key
 - BlackHole virtual audio driver
 - FFmpeg and Sox
 
-> **Note**: We are planning to migrate from OpenAI Whisper to AssemblyAI for improved accuracy and features. See [IMPROVEMENT_RECOMMENDATIONS.md](IMPROVEMENT_RECOMMENDATIONS.md) for details.
+> **Note**: This project now uses AssemblyAI for superior transcription accuracy and built-in speaker diarization.
 
 ## Installation
 
@@ -60,8 +60,8 @@ See our [Roadmap](IMPROVEMENT_RECOMMENDATIONS.md) for planned improvements and A
    ```bash
    # Create your environment configuration
    cp .env.example .env
-   # Edit .env and add your OpenAI API key:
-   # OPENAI_API_KEY=your_key_here
+   # Edit .env and add your AssemblyAI API key:
+   # ASSEMBLYAI_API_KEY=your_key_here
    ```
 
 4. **Verify setup:**
@@ -92,7 +92,7 @@ See our [Roadmap](IMPROVEMENT_RECOMMENDATIONS.md) for planned improvements and A
 
 1. **Audio Capture**: Uses BlackHole to capture system audio and Sox for microphone
 2. **Processing**: Audio is processed in 10-second chunks for near real-time transcription
-3. **Transcription**: OpenAI Whisper API provides accurate transcription with timestamps
+3. **Transcription**: AssemblyAI provides industry-leading accuracy with automatic speaker diarization
 4. **Speaker ID**: System audio is labeled as "Speaker 1", "Speaker 2", etc. Microphone is "You"
 5. **Storage**: SQLite database stores all transcripts with full-text search capability
 
@@ -105,9 +105,10 @@ The app uses a multi-output device to capture system audio:
 
 ## Cost
 
-- Uses OpenAI Whisper API at $0.006 per minute
-- Typical meeting costs ~$0.06 per hour
+- Uses AssemblyAI API at $0.00025 per second (~$0.015 per minute)
+- Typical meeting costs ~$0.90 per hour
 - Only transcribes when audio is detected
+- Speaker diarization included at no extra cost
 
 ## Troubleshooting
 
@@ -133,7 +134,7 @@ npm run setup-audio
 
 - API key is stored locally in .env file
 - No audio data is stored permanently (only transcripts)
-- All processing happens locally except for OpenAI API calls
+- All processing happens locally except for AssemblyAI API calls
 
 ## Contributing
 
@@ -182,8 +183,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [BlackHole Audio](https://github.com/ExistentialAudio/BlackHole) for virtual audio routing
-- [OpenAI Whisper](https://openai.com/research/whisper) for transcription (migrating to AssemblyAI)
-- [AssemblyAI](https://www.assemblyai.com/) for future transcription and AI features
+- [AssemblyAI](https://www.assemblyai.com/) for transcription and speaker diarization
 
 ---
 

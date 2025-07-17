@@ -10,11 +10,13 @@
     "setup-audio": "node scripts/setup-audio.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@types/node": "^20.0.0",
+    "assemblyai": "^4.14.0",
     "axios": "^1.5.0",
     "chalk": "^4.1.2",
     "dotenv": "^16.3.1",
@@ -23,7 +25,6 @@
     "inquirer": "^8.2.6",
     "node-record-lpcm16": "^1.0.1",
     "node-wav": "^0.0.2",
-    "openai": "^4.0.0",
     "ora": "^5.4.1",
     "sox-audio": "^0.3.0",
     "sqlite3": "^5.1.6",
@@ -36,7 +37,14 @@
     "@typescript-eslint/eslint-plugin": "^8.37.0",
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.31.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ]
   }
 }
